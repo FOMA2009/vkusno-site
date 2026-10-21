@@ -1,0 +1,756 @@
+{
+ "shashlyk-iz-svinoy-shei": {
+  "price_kop": 17000,
+  "variants": {
+   "100 г": 19000,
+   "200 г": 38000,
+   "300 г": 57000,
+   "500 г": 95000
+  },
+  "options": {}
+ },
+ "shashlyk-iz-svinogo-karbonada": {
+  "price_kop": 16000,
+  "variants": {
+   "100 г": 18000,
+   "200 г": 36000,
+   "300 г": 54000,
+   "500 г": 90000
+  },
+  "options": {}
+ },
+ "shashlyk-iz-kurinogo-file": {
+  "price_kop": 15000,
+  "variants": {
+   "100 г": 17000,
+   "200 г": 34000,
+   "300 г": 51000,
+   "500 г": 85000
+  },
+  "options": {}
+ },
+ "shashlyk-iz-kurinyh-krylyshek": {
+  "price_kop": 14000,
+  "variants": {
+   "100 г": 16000,
+   "200 г": 32000,
+   "300 г": 48000,
+   "500 г": 80000
+  },
+  "options": {}
+ },
+ "shashlyk-iz-svinoy-vyrezki": {
+  "price_kop": 0,
+  "variants": {
+   "100 г": 0,
+   "200 г": 0,
+   "300 г": 0,
+   "500 г": 0
+  },
+  "options": {}
+ },
+ "shashlyk-iz-svinoy-koreyki": {
+  "price_kop": 0,
+  "variants": {
+   "100 г": 0,
+   "200 г": 0,
+   "300 г": 0,
+   "500 г": 0
+  },
+  "options": {}
+ },
+ "shashlyk-iz-svinyh-rebryshek": {
+  "price_kop": 0,
+  "variants": {
+   "100 г": 0,
+   "200 г": 0,
+   "300 г": 0,
+   "500 г": 0
+  },
+  "options": {}
+ },
+ "shashlyk-iz-kurinoy-goleni": {
+  "price_kop": 0,
+  "variants": {
+   "100 г": 0,
+   "200 г": 0,
+   "300 г": 0,
+   "500 г": 0
+  },
+  "options": {}
+ },
+ "shashlyk-iz-baraniny-koreyka": {
+  "price_kop": 0,
+  "variants": {
+   "100 г": 0,
+   "200 г": 0,
+   "300 г": 0,
+   "500 г": 0
+  },
+  "options": {}
+ },
+ "shashlyk-iz-baraniny-myakot": {
+  "price_kop": 0,
+  "variants": {
+   "100 г": 0,
+   "200 г": 0,
+   "300 г": 0,
+   "500 г": 0
+  },
+  "options": {}
+ },
+ "lyulya-kebab-iz-baraniny": {
+  "price_kop": 38000,
+  "variants": {},
+  "options": {}
+ },
+ "lyulya-kebab-iz-govyadiny": {
+  "price_kop": 38000,
+  "variants": {},
+  "options": {}
+ },
+ "lyulya-kebab-iz-svininy": {
+  "price_kop": 35000,
+  "variants": {},
+  "options": {}
+ },
+ "lyulya-kebab-iz-kuricy": {
+  "price_kop": 35000,
+  "variants": {},
+  "options": {}
+ },
+ "donar-so-svininoy": {
+  "price_kop": 37000,
+  "variants": {},
+  "options": {}
+ },
+ "donar-s-kuricey": {
+  "price_kop": 37000,
+  "variants": {},
+  "options": {}
+ },
+ "donar-s-lyulya-kebab": {
+  "price_kop": 37000,
+  "variants": {},
+  "options": {}
+ },
+ "hot-dog-v-lavashe": {
+  "price_kop": 35000,
+  "variants": {},
+  "options": {}
+ },
+ "hot-dog-v-bagete": {
+  "price_kop": 35000,
+  "variants": {},
+  "options": {}
+ },
+ "burger-s-kotletoy-iz-kuricy": {
+  "price_kop": 45000,
+  "variants": {},
+  "options": {}
+ },
+ "burger-s-kotletoy-iz-govyadiny": {
+  "price_kop": 48000,
+  "variants": {},
+  "options": {}
+ },
+ "burger-s-kotletoy-iz-svininy": {
+  "price_kop": 45000,
+  "variants": {},
+  "options": {}
+ },
+ "shef-burger": {
+  "price_kop": 63000,
+  "variants": {},
+  "options": {}
+ },
+ "kartofel-na-mangale": {
+  "price_kop": 7000,
+  "variants": {
+   "100 г": 10000,
+   "200 г": 20000,
+   "300 г": 30000
+  },
+  "options": {}
+ },
+ "shampinony-na-mangale": {
+  "price_kop": 10000,
+  "variants": {
+   "100 г": 12000,
+   "200 г": 24000,
+   "300 г": 36000
+  },
+  "options": {}
+ },
+ "baklazhan-perec-pomidor-luk-na-mangale": {
+  "price_kop": 12000,
+  "variants": {
+   "100 г": 13000,
+   "200 г": 26000,
+   "300 г": 39000
+  },
+  "options": {}
+ },
+ "shaurma-s-kuricey": {
+  "price_kop": 30000,
+  "variants": {},
+  "options": {
+   "Шампиньоны": 5000,
+   "Сыр": 5000,
+   "Сырный лаваш": 0,
+   "Халапеньо": 5000,
+   "Острый": 0
+  }
+ },
+ "shaurma-so-svininoy": {
+  "price_kop": 30000,
+  "variants": {},
+  "options": {
+   "Шампиньоны": 5000,
+   "Сыр": 5000,
+   "Сырный лаваш": 0,
+   "Халапеньо": 5000,
+   "Острый": 0
+  }
+ },
+ "shaurma-s-lyulya-kebab": {
+  "price_kop": 38000,
+  "variants": {},
+  "options": {
+   "Шампиньоны": 5000,
+   "Сыр": 5000,
+   "Сырный лаваш": 0,
+   "Халапеньо": 5000,
+   "Острый": 0
+  }
+ },
+ "shaurma-zhyulen": {
+  "price_kop": 40000,
+  "variants": {},
+  "options": {
+   "Шампиньоны": 0,
+   "Сыр": 0,
+   "Сырный лаваш": 0,
+   "Халапеньо": 0,
+   "Острый": 0
+  }
+ },
+ "mini-shaurma": {
+  "price_kop": 25000,
+  "variants": {},
+  "options": {
+   "Шампиньоны": 5000,
+   "Сыр": 5000,
+   "Сырный лаваш": 0,
+   "Халапеньо": 5000,
+   "Острый": 0
+  }
+ },
+ "shaurma-vegetarianskaya": {
+  "price_kop": 22000,
+  "variants": {},
+  "options": {
+   "Шампиньоны": 5000,
+   "Сыр": 5000,
+   "Сырный лаваш": 0,
+   "Халапеньо": 5000,
+   "Острый": 0
+  }
+ },
+ "shaurma-iki-bir": {
+  "price_kop": 40000,
+  "variants": {},
+  "options": {
+   "Шампиньоны": 5000,
+   "Сыр": 5000,
+   "Сырный лаваш": 0,
+   "Халапеньо": 5000,
+   "Острый": 0
+  }
+ },
+ "kartofel-fri": {
+  "price_kop": 16000,
+  "variants": {},
+  "options": {}
+ },
+ "kartofel-po-derevenski": {
+  "price_kop": 16000,
+  "variants": {},
+  "options": {}
+ },
+ "tempura-assorti": {
+  "price_kop": 72000,
+  "variants": {},
+  "options": {}
+ },
+ "tempura-krevetka": {
+  "price_kop": 45000,
+  "variants": {},
+  "options": {}
+ },
+ "tempura-losos": {
+  "price_kop": 39000,
+  "variants": {},
+  "options": {}
+ },
+ "tempura-kalmar": {
+  "price_kop": 23000,
+  "variants": {},
+  "options": {}
+ },
+ "grenki-chesnochnye": {
+  "price_kop": 15000,
+  "variants": {},
+  "options": {}
+ },
+ "nagetsy-kurinye": {
+  "price_kop": 20000,
+  "variants": {},
+  "options": {}
+ },
+ "lukovye-kolca": {
+  "price_kop": 23000,
+  "variants": {},
+  "options": {}
+ },
+ "assorti-pivnoe": {
+  "price_kop": 99000,
+  "variants": {},
+  "options": {}
+ },
+ "miso-sup-s-lososem": {
+  "price_kop": 37000,
+  "variants": {},
+  "options": {}
+ },
+ "miso-sup-s-krevetkoy": {
+  "price_kop": 37000,
+  "variants": {},
+  "options": {}
+ },
+ "miso-sup-s-ugrem": {
+  "price_kop": 37000,
+  "variants": {},
+  "options": {}
+ },
+ "sushi-sake-losos": {
+  "price_kop": 15000,
+  "variants": {},
+  "options": {}
+ },
+ "sushi-unagi-ugor": {
+  "price_kop": 15000,
+  "variants": {},
+  "options": {}
+ },
+ "sushi-ebi-krevetka": {
+  "price_kop": 15000,
+  "variants": {},
+  "options": {}
+ },
+ "sushi-maguro-tunec": {
+  "price_kop": 15000,
+  "variants": {},
+  "options": {}
+ },
+ "gunkan-sake-losos": {
+  "price_kop": 15000,
+  "variants": {},
+  "options": {}
+ },
+ "gunkan-unagi-ugor": {
+  "price_kop": 15000,
+  "variants": {},
+  "options": {}
+ },
+ "gunkan-ebi-krevetka": {
+  "price_kop": 19500,
+  "variants": {},
+  "options": {}
+ },
+ "gunkan-ikura-ikra-lososevaya": {
+  "price_kop": 21000,
+  "variants": {},
+  "options": {}
+ },
+ "gunkan-maguro-tunec": {
+  "price_kop": 18000,
+  "variants": {},
+  "options": {}
+ },
+ "gunkan-tobiko-ikra-letuchey-ryby": {
+  "price_kop": 18000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-s-krabom": {
+  "price_kop": 18000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-s-lososem": {
+  "price_kop": 20000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-s-ogurcom": {
+  "price_kop": 18000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-s-ugrem": {
+  "price_kop": 21000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-s-tuncom": {
+  "price_kop": 22000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-s-krevetkoy": {
+  "price_kop": 23000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-s-krevetkoy-i-syrom": {
+  "price_kop": 24000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-s-lososem-i-syrom": {
+  "price_kop": 24000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-s-lososem-i-ogurcom": {
+  "price_kop": 23000,
+  "variants": {},
+  "options": {}
+ },
+ "filadelfiya": {
+  "price_kop": 42000,
+  "variants": {},
+  "options": {}
+ },
+ "filadelfiya-s-ogurcom": {
+  "price_kop": 46000,
+  "variants": {},
+  "options": {}
+ },
+ "filadelfiya-mini": {
+  "price_kop": 35000,
+  "variants": {},
+  "options": {}
+ },
+ "filadelfiya-vip": {
+  "price_kop": 47000,
+  "variants": {},
+  "options": {}
+ },
+ "filadelfiya-s-avokado": {
+  "price_kop": 46000,
+  "variants": {},
+  "options": {}
+ },
+ "filadelfiya-s-krevetkoy": {
+  "price_kop": 48000,
+  "variants": {},
+  "options": {}
+ },
+ "filadelfiya-s-tuncom": {
+  "price_kop": 49000,
+  "variants": {},
+  "options": {}
+ },
+ "filadelfiya-de-lyuks": {
+  "price_kop": 50000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-drakon": {
+  "price_kop": 85000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-kanada": {
+  "price_kop": 56000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-kanada-vip": {
+  "price_kop": 59000,
+  "variants": {},
+  "options": {}
+ },
+ "kaliforniya-layt": {
+  "price_kop": 43000,
+  "variants": {},
+  "options": {}
+ },
+ "kaliforniya-s-krevetkoy": {
+  "price_kop": 44000,
+  "variants": {},
+  "options": {}
+ },
+ "kaliforniya-s-ugrem": {
+  "price_kop": 44000,
+  "variants": {},
+  "options": {}
+ },
+ "kaliforniya-s-lososem": {
+  "price_kop": 43000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-bonito": {
+  "price_kop": 41000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-yaponiya": {
+  "price_kop": 40000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-kitay": {
+  "price_kop": 39000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-evropa": {
+  "price_kop": 40000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-fitnes": {
+  "price_kop": 38000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-men": {
+  "price_kop": 39000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-tornado": {
+  "price_kop": 48000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-osaka": {
+  "price_kop": 52000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-green": {
+  "price_kop": 42000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-in-yan": {
+  "price_kop": 41000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-cezar": {
+  "price_kop": 43000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-tokio": {
+  "price_kop": 47000,
+  "variants": {},
+  "options": {}
+ },
+ "roll-mammori": {
+  "price_kop": 44000,
+  "variants": {},
+  "options": {}
+ },
+ "teplyy-roll-kamchatka": {
+  "price_kop": 50000,
+  "variants": {},
+  "options": {}
+ },
+ "teplyy-roll-filadelfiya": {
+  "price_kop": 52000,
+  "variants": {},
+  "options": {}
+ },
+ "teplyy-roll-alyaska": {
+  "price_kop": 53000,
+  "variants": {},
+  "options": {}
+ },
+ "teplyy-roll-virdzhiniya": {
+  "price_kop": 52000,
+  "variants": {},
+  "options": {}
+ },
+ "teplyy-roll-norvegiya": {
+  "price_kop": 58000,
+  "variants": {},
+  "options": {}
+ },
+ "teplyy-roll-bekon": {
+  "price_kop": 51000,
+  "variants": {},
+  "options": {}
+ },
+ "teplyy-roll-cezar": {
+  "price_kop": 55000,
+  "variants": {},
+  "options": {}
+ },
+ "set-pyatnica": {
+  "price_kop": 299900,
+  "variants": {},
+  "options": {}
+ },
+ "set-filadelfiya": {
+  "price_kop": 149900,
+  "variants": {},
+  "options": {}
+ },
+ "set-s-ugrem": {
+  "price_kop": 139900,
+  "variants": {},
+  "options": {}
+ },
+ "set-s-lososem": {
+  "price_kop": 129900,
+  "variants": {},
+  "options": {}
+ },
+ "set-goryachiy": {
+  "price_kop": 269900,
+  "variants": {},
+  "options": {}
+ },
+ "set-vip": {
+  "price_kop": 179900,
+  "variants": {},
+  "options": {}
+ },
+ "set-aziya": {
+  "price_kop": 199900,
+  "variants": {},
+  "options": {}
+ },
+ "set-kaliforniya": {
+  "price_kop": 149900,
+  "variants": {},
+  "options": {}
+ },
+ "ris": {
+  "price_kop": 29000,
+  "variants": {
+   "С овощами": 33000,
+   "С курицей и овощами": 40000,
+   "С кольцами кальмаров в устричном соусе": 42000,
+   "С морепродуктами и овощами": 45000,
+   "Со свининой и овощами": 40000,
+   "С говядиной и овощами": 44000
+  },
+  "options": {}
+ },
+ "ramen-yaichnaya-lapsha": {
+  "price_kop": 29000,
+  "variants": {
+   "С овощами": 33000,
+   "С курицей и овощами": 40000,
+   "С морепродуктами и овощами": 42000,
+   "С кольцами кальмаров в устричном соусе": 45000,
+   "Со свининой и овощами": 40000,
+   "С говядиной и овощами": 44000
+  },
+  "options": {}
+ },
+ "soba-grechnevaya-lapsha": {
+  "price_kop": 29000,
+  "variants": {
+   "С овощами": 33000,
+   "С курицей и овощами": 40000,
+   "С говядиной и овощами": 42000,
+   "Со свининой и овощами": 45000,
+   "С морепродуктами и овощами": 40000,
+   "С кольцами кальмаров в устричном соусе": 44000
+  },
+  "options": {}
+ },
+ "udon-pshenichnaya-lapsha": {
+  "price_kop": 29000,
+  "variants": {
+   "С овощами": 33000,
+   "С курицей и овощами": 40000,
+   "С говядиной и овощами": 42000,
+   "Со свининой и овощами": 45000,
+   "С морепродуктами и овощами": 40000,
+   "С кольцами кальмаров в устричном соусе": 44000
+  },
+  "options": {}
+ },
+ "harusame-risovaya-lapsha": {
+  "price_kop": 29000,
+  "variants": {
+   "С овощами": 33000,
+   "С курицей и овощами": 40000,
+   "С говядиной и овощами": 42000,
+   "Со свининой и овощами": 45000,
+   "С морепродуктами и овощами": 40000,
+   "С кольцами кальмаров в устричном соусе": 44000
+  },
+  "options": {}
+ },
+ "lavash": {
+  "price_kop": 5000,
+  "variants": {},
+  "options": {}
+ },
+ "lepeshka": {
+  "price_kop": 15000,
+  "variants": {},
+  "options": {}
+ },
+ "sous": {
+  "price_kop": 7000,
+  "variants": {},
+  "options": {}
+ },
+ "vasabi": {
+  "price_kop": 7000,
+  "variants": {},
+  "options": {}
+ },
+ "soevyy-sous": {
+  "price_kop": 5000,
+  "variants": {},
+  "options": {}
+ },
+ "imbir": {
+  "price_kop": 5000,
+  "variants": {},
+  "options": {}
+ },
+ "chernyy-chay-ceylonskiy-indiyskiy": {
+  "price_kop": 0,
+  "variants": {},
+  "options": {}
+ },
+ "zelenyy-chay": {
+  "price_kop": 0,
+  "variants": {},
+  "options": {}
+ },
+ "chay-s-limonom": {
+  "price_kop": 0,
+  "variants": {},
+  "options": {}
+ },
+ "chay-s-myatoy-s-medom": {
+  "price_kop": 0,
+  "variants": {},
+  "options": {}
+ }
+}

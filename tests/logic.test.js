@@ -120,13 +120,14 @@ test('Блюдо с вариантами требует выбора вариа�
   const vars = db.prepare('SELECT * FROM product_variants WHERE product_id = ? ORDER BY sort').all(p.id);
   assert.equal(quote({ items: [{ product_id: p.id, qty: 1 }], fulfillment: 'pickup' }).lines[0].issue, 'variant_required');
   const r = quote({ items: [{ product_id: p.id, variant_id: vars[1].id, qty: 2 }], fulfillment: 'pickup' }); // 200 г × 2
-  assert.equal(r.lines[0].unit_kop, R(340)); assert.equal(r.total_kop, R(680));
+  assert.equal(r.lines[0].unit_kop, vars[1].price_kop); assert.equal(r.total_kop, vars[1].price_kop * 2);
 });
 test('Добавки увеличивают цену', () => {
   const p = db.prepare("SELECT id FROM products WHERE slug = 'shaurma-s-kuricey'").get();
   const opts = db.prepare('SELECT * FROM product_options WHERE product_id = ?').all(p.id);
   const cheese = opts.find(o => o.name === 'Сыр');
-  assert.equal(quote({ items: [{ product_id: p.id, option_ids: [cheese.id], qty: 1 }], fulfillment: 'pickup' }).total_kop, R(300));
+  const base = db.prepare('SELECT price_kop FROM products WHERE id = ?').get(p.id).price_kop;
+  assert.equal(quote({ items: [{ product_id: p.id, option_ids: [cheese.id], qty: 1 }], fulfillment: 'pickup' }).total_kop, base + cheese.price_kop);
 });
 
 // ── Геозона ──────────────────────────────────────────────────
@@ -216,4 +217,15 @@ test('Начальные настройки доставки соответст�
   assert.equal(settings.get('delivery.fee_kop'), 19900); assert.equal(settings.get('delivery.free_threshold_kop'), 300000);
   assert.equal(settings.get('delivery.min_order_kop'), 150000); assert.equal(settings.get('delivery.free_radius_km'), 5);
   assert.deepEqual(settings.get('delivery.free_districts'), ['autozavodsky']);
+});
+
+test('Закреплённые цены применены; у видимых блюд и вариантов нет нулевых цен', () => {
+  const prices = require('../server/seed/prices.json');
+  const p = db.prepare("SELECT price_kop FROM products WHERE slug = 'shaurma-s-kuricey'").get();
+  assert.equal(p.price_kop, prices['shaurma-s-kuricey'].price_kop);
+  assert.equal(db.prepare(`SELECT COUNT(*) n FROM product_variants v JOIN products p ON p.id = v.product_id WHERE p.is_active = 1 AND p.slug NOT LIKE 't-%' AND v.price_kop <= 0`).get().n, 0);
+  assert.equal(db.prepare(`SELECT COUNT(*) n FROM products p WHERE p.is_active = 1 AND p.slug NOT LIKE 't-%' AND p.price_kop <= 0 AND NOT EXISTS (SELECT 1 FROM product_variants v WHERE v.product_id = p.id)`).get().n, 0);
+  // порции шашлыка пропорциональны цене за 100 г
+  const v = db.prepare("SELECT name, price_kop FROM product_variants WHERE product_id = (SELECT id FROM products WHERE slug = 'shashlyk-iz-svinoy-shei') ORDER BY sort").all();
+  assert.equal(v[1].price_kop, v[0].price_kop * 2); assert.equal(v[3].price_kop, v[0].price_kop * 5);
 });

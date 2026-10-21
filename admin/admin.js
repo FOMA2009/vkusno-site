@@ -181,7 +181,7 @@
     const { products } = await api('/prices').catch(e => { toast(e.message, true); return { products: [] }; });
     view().innerHTML = `<div class="note">Здесь меняются только цены. Изменения сразу видны на сайте, все правки записываются в журнал. Цены указаны в рублях.</div>
       <div class="bar"><input class="grow" id="prq" type="search" placeholder="Найти блюдо" aria-label="Найти блюдо"></div><div id="prl"></div><div id="prlog"></div>`;
-    const priceInput = (key, label, kop) => `<label class="pr-row"><span>${esc(label)}</span><input data-k="${key}" data-o="${kop}" inputmode="decimal" value="${fromKop(kop)}" aria-label="${esc(label)}, цена в рублях"></label>`;
+    const priceInput = (key, label, kop) => { const g = /^(\d+) г$/.exec(label); return `<label class="pr-row"><span>${esc(label)}</span><input data-k="${key}" data-o="${kop}" ${g ? `data-g="${g[1]}"` : ''} inputmode="decimal" value="${fromKop(kop)}" aria-label="${esc(label)}, цена в рублях"></label>`; };
     let cat = '';
     $('#prl').innerHTML = products.map(p => {
       const head = p.category_name !== cat ? `<h2 class="pr-cat">${esc(cat = p.category_name)}</h2>` : '';
@@ -193,7 +193,12 @@
     }).join('') || '<p class="muted">Блюд нет.</p>';
     $('#prq').oninput = e => { const q = e.target.value.toLowerCase(); $$('.pr-item').forEach(i => { i.hidden = q && !i.dataset.name.includes(q); }); };
     const changed = it => $$('input[data-k]', it).some(i => toKop(i.value) !== Number(i.dataset.o));
-    $('#prl').addEventListener('input', e => { const it = e.target.closest('.pr-item'); if (it) { $('[data-save]', it).disabled = !changed(it); $('[data-msg]', it).textContent = ''; } });
+    $('#prl').addEventListener('input', e => {
+      const it = e.target.closest('.pr-item');
+      // цена за 100 г пересчитывает порции 200/300/500 г автоматически
+      if (it && e.target.dataset.g === '100') { const k = toKop(e.target.value); $$('input[data-g]', it).forEach(i => { if (i !== e.target) i.value = fromKop(Math.round(k * Number(i.dataset.g) / 100)); }); }
+      if (it) { $('[data-save]', it).disabled = !changed(it); $('[data-msg]', it).textContent = ''; }
+    });
     $('#prl').addEventListener('click', guard(async e => {
       const btn = e.target.closest('[data-save]'); if (!btn) return;
       const it = btn.closest('.pr-item'), body = { variants: [], options: [] };

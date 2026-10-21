@@ -44,8 +44,23 @@ function seedPromotions() {
   ins.run('Бесплатная доставка по всему городу', 'При заказе от 3 000 ₽ доставка по Нижнему Новгороду бесплатная.', 1);
 }
 
+// Закреплённые цены (scripts/export-prices.js) поверх стартового меню из PDF
+function applyPrices() {
+  const file = path.join(__dirname, 'prices.json');
+  if (!fs.existsSync(file)) return;
+  const prices = JSON.parse(fs.readFileSync(file, 'utf8'));
+  tx(() => {
+    for (const [slug, v] of Object.entries(prices)) {
+      const p = db.prepare('SELECT id FROM products WHERE slug = ?').get(slug); if (!p) continue;
+      db.prepare('UPDATE products SET price_kop = ? WHERE id = ?').run(v.price_kop, p.id);
+      for (const [name, kop] of Object.entries(v.variants || {})) db.prepare('UPDATE product_variants SET price_kop = ? WHERE product_id = ? AND name = ?').run(kop, p.id, name);
+      for (const [name, kop] of Object.entries(v.options || {})) db.prepare('UPDATE product_options SET price_kop = ? WHERE product_id = ? AND name = ?').run(kop, p.id, name);
+    }
+  });
+}
+
 function seedAll() {
-  if (!db.prepare('SELECT COUNT(*) n FROM categories').get().n) seedMenu();
+  if (!db.prepare('SELECT COUNT(*) n FROM categories').get().n) { seedMenu(); applyPrices(); }
   seedPages();
   seedPromotions();
 }

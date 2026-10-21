@@ -71,9 +71,10 @@ router.put('/prices/:id', priceEditor, (req, res) => {
   // Видимое блюдо без цены на сайте недопустимо
   const after = (t, rid, cur) => changes.find(c => c.t === t && c.id === rid)?.nw ?? cur;
   if (p.is_active) {
-    const hasVar = vars.length > 0;
-    const ok = hasVar ? vars.some(v => after('product_variants', v.id, v.price_kop) > 0) : after('products', id, p.price_kop) > 0;
-    if (!ok) return bad(res, 'У видимого блюда цена не может быть нулевой');
+    // у видимого блюда ни цена, ни один доступный вариант не могут стоить 0 ₽
+    const zero = vars.find(v => v.in_stock && after('product_variants', v.id, v.price_kop) <= 0);
+    if (zero) return bad(res, `У варианта «${zero.name}» цена не может быть нулевой`);
+    if (!vars.length && after('products', id, p.price_kop) <= 0) return bad(res, 'У видимого блюда цена не может быть нулевой');
   }
   tx(() => {
     for (const c of changes) {
@@ -179,7 +180,7 @@ router.post('/products', adminOnly, (req, res) => {
   const price = int(b.price_kop, 0, 0, 1e9);
   const active = flag(b.is_active);
   if (active && !variants.length && price <= 0) return bad(res, 'Для видимого блюда укажите цену (или варианты с ценой)');
-  if (active && variants.length && variants.every(v => v.price_kop <= 0)) return bad(res, 'Укажите цену хотя бы у одного варианта');
+  if (active && variants.some(v => v.in_stock && v.price_kop <= 0)) return bad(res, 'Укажите цену у всех доступных вариантов');
   const image = b.image && /^\/(uploads|menu)\/[\w.-]+\.webp$/.test(b.image) ? b.image : '';
   const id = b.id ? int(b.id) : 0;
   const slug = uniqueSlug('products', slugify(str(b.slug, 100) || name), id);
