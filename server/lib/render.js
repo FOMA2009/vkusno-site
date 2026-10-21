@@ -140,7 +140,9 @@ function priceHtml(p) {
   return `<span class="price">${from}${rub(p.price_from)}</span>`;
 }
 function dishImage(p, cls = 'card-img', size = '') {
-  if (p.image) return `<div class="${cls}"><img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" decoding="async" ${size}></div>`;
+  // версия в адресе: после замены фото браузер не показывает старую картинку из кэша
+  const ver = p.updated_at ? Math.floor(Date.parse(p.updated_at) / 1000) || 0 : 0;
+  if (p.image) return `<div class="${cls}"><img src="${esc(p.image)}?v=${ver}" alt="${esc(p.name)}" loading="lazy" decoding="async" ${size}></div>`;
   return `<div class="${cls} ph" role="img" aria-label="${esc(p.name)}: фото пока нет"><img src="/img/mark.webp" alt="" loading="lazy" width="96" height="75"></div>`;
 }
 function card(p) {
