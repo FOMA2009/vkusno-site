@@ -1,0 +1,31 @@
+{
+  "name": "vkusno-shop",
+  "version": "1.0.0",
+  "description": "Интернет-магазин ресторана В'кусно",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "create-admin": "node scripts/create-admin.js",
+    "test": "node --test tests/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.2",
+    "express": "^5.3.0",
+    "multer": "^2.4.0",
+    "nodemailer": "^10.1.7",
+    "sharp": "^0.35.5"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.15.0"
+  }
+}
