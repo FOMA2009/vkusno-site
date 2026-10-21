@@ -59,10 +59,27 @@ function applyPrices() {
   });
 }
 
+// Красивые описания блюд (server/seed/descriptions.js). Не перезаписывают то, что владелец уже написал сам:
+// заменяются только пустые описания и исходные короткие пометки из PDF.
+function applyDescriptions() {
+  const descs = require('./descriptions');
+  const original = {};
+  for (const c of menu) for (const [name, , o = {}] of c.items) original[name] = o.desc || '';
+  let n = 0;
+  tx(() => {
+    for (const [name, text] of Object.entries(descs)) {
+      const p = db.prepare('SELECT id, description FROM products WHERE name = ?').get(name);
+      if (!p || (p.description && p.description !== original[name])) continue;
+      db.prepare('UPDATE products SET description = ? WHERE id = ?').run(text, p.id); n++;
+    }
+  });
+  return n;
+}
+
 function seedAll() {
-  if (!db.prepare('SELECT COUNT(*) n FROM categories').get().n) { seedMenu(); applyPrices(); }
+  if (!db.prepare('SELECT COUNT(*) n FROM categories').get().n) { seedMenu(); applyPrices(); applyDescriptions(); }
   seedPages();
   seedPromotions();
 }
 
-module.exports = { seedAll };
+module.exports = { seedAll, applyDescriptions };

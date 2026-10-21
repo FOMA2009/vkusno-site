@@ -27,6 +27,8 @@ async function adm(pathname, method = 'GET', body) {
     let r = await adm('/login', 'POST', { email: AEMAIL, password: APASS }); csrf = r.json.csrf;
     ok(r.status === 200 && csrf, 'Вход администратора через API');
     const bad = await adm('/login', 'POST', { email: AEMAIL, password: 'неверный' }); ok(bad.status === 401, 'Неверный пароль отклоняется');
+    // тест не должен зависеть от времени суток: на тестовой базе ресторан открыт круглосуточно
+    await adm('/settings', 'PUT', { settings: { 'hours.schedule': [0, 1, 2, 3, 4, 5, 6].map(day => ({ day, open: '00:00', close: '23:59' })) } });
     const future = new Date(Date.now() + 864e5 * 30).toISOString(), past = new Date(Date.now() - 864e5).toISOString();
     await adm('/promos', 'POST', { code: 'E2E10', type: 'percent', value: 10, is_active: true, expires_at: future });
     await adm('/promos', 'POST', { code: 'OLD10', type: 'percent', value: 10, is_active: true, expires_at: past });

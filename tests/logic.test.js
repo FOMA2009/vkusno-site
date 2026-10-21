@@ -6,6 +6,8 @@ const assert = require('node:assert/strict');
 const { db, settings } = require('../server/db');
 const { seedAll } = require('../server/seed');
 seedAll();
+// Тесты не должны зависеть от времени суток: на тестовой базе ресторан открыт круглосуточно
+settings.set('hours.schedule', [0, 1, 2, 3, 4, 5, 6].map(day => ({ day, open: '00:00', close: '23:59' })));
 const { quote } = require('../server/lib/pricing');
 const geo = require('../server/lib/geo');
 const orders = require('../server/lib/orders');
@@ -236,4 +238,11 @@ test('Закреплённые цены применены; у видимых б
   assert.ok(!dish.variants.some(x => parseInt(x.name, 10) < 400)); // порций меньше 400 г нет
   const small = quote({ items: [{ product_id: dish.id, variant_id: 99999, qty: 1 }], fulfillment: 'pickup' }); // выдуманный «малый» вариант
   assert.equal(small.can_checkout, false);
+});
+
+test('Свежая база: у всех видимых блюд есть описание и фото, позиции «Соус» нет', () => {
+  const bad = db.prepare("SELECT name FROM products WHERE is_active = 1 AND slug NOT LIKE 't-%' AND (description = '' OR image = '')").all();
+  assert.deepEqual(bad, []);
+  assert.equal(db.prepare("SELECT COUNT(*) n FROM products WHERE name = 'Соус'").get().n, 0);
+  assert.match(db.prepare("SELECT description d FROM products WHERE name = 'Ролл Men'").get().d, /Бекон, томат и укроп/); // состав из PDF сохранён
 });
