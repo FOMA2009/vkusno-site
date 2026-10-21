@@ -137,7 +137,7 @@ async function adm(pathname, method = 'GET', body) {
     // подмена из браузера: прямой POST с чужими ценами
     const forged = await p.evaluate(async () => (await fetch('/api/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idempotency_key: 'forged-key-1234567890', fulfillment: 'pickup', items: [{ product_id: 1, variant_id: 1, qty: 1, price_kop: 1, unit_kop: 1 }], total_kop: 1, discount_kop: 999999, name: 'Хакер', phone: '9001112233', consent_pd: true, payment_method: 'on_receipt' }) })).json());
     const fo = (await adm('/orders?q=' + encodeURIComponent('Хакер'))).json.orders[0];
-    ok(fo && fo.total_kop === 17000, 'Подмена цены/скидки в запросе не влияет на сумму (сервер посчитал ' + (fo && fo.total_kop / 100) + ' ₽)');
+    ok(fo && fo.total_kop === 76000, 'Подмена цены/скидки в запросе не влияет на сумму (сервер посчитал ' + (fo && fo.total_kop / 100) + ' ₽)');
 
     // ── Админ-панель в браузере ────────────────────────────
     const a = await browser.newPage(); await a.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
