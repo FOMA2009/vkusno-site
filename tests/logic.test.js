@@ -227,5 +227,13 @@ test('Закреплённые цены применены; у видимых б
   assert.equal(db.prepare(`SELECT COUNT(*) n FROM products p WHERE p.is_active = 1 AND p.slug NOT LIKE 't-%' AND p.price_kop <= 0 AND NOT EXISTS (SELECT 1 FROM product_variants v WHERE v.product_id = p.id)`).get().n, 0);
   // порции шашлыка пропорциональны цене за 100 г
   const v = db.prepare("SELECT name, price_kop FROM product_variants WHERE product_id = (SELECT id FROM products WHERE slug = 'shashlyk-iz-svinoy-shei') ORDER BY sort").all();
-  assert.equal(v[1].price_kop, v[0].price_kop * 2); assert.equal(v[3].price_kop, v[0].price_kop * 5);
+  assert.deepEqual(v.map(x => x.name), ['400 г', '500 г', '600 г', '800 г', '1000 г']); // заказ только от 400 г
+  const per100 = v[0].price_kop / 4;
+  assert.deepEqual(v.map(x => x.price_kop), [400, 500, 600, 800, 1000].map(g => Math.round(per100 * g / 100)));
+  const { getCatalog } = require('../server/lib/catalog');
+  const dish = getCatalog().products.find(x => x.slug === 'shashlyk-iz-svinoy-shei');
+  assert.equal(dish.per100, true); assert.equal(dish.min_grams, 400); assert.equal(dish.price_per100, Math.round(per100));
+  assert.ok(!dish.variants.some(x => parseInt(x.name, 10) < 400)); // порций меньше 400 г нет
+  const small = quote({ items: [{ product_id: dish.id, variant_id: 99999, qty: 1 }], fulfillment: 'pickup' }); // выдуманный «малый» вариант
+  assert.equal(small.can_checkout, false);
 });

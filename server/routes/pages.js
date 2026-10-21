@@ -46,7 +46,7 @@ router.get('/', (req, res) => {
   <div class="wrap hero-in">
     <div class="hero-text">
       ${openBadge(si)}
-      <h1>Шаурма, шашлык и роллы с доставкой по Нижнему Новгороду</h1>
+      <h1>Шашлык и роллы с доставкой по Нижнему Новгороду</h1>
       <p class="lead">Готовим на заказ. Бесплатная доставка рядом с рестораном и от ${rub(si.threshold)} по всему городу. Самовывоз — на любую сумму.</p>
       <div class="btn-row"><a class="btn btn-primary btn-lg" href="/menu">Смотреть меню</a><a class="btn btn-ghost btn-lg" href="/delivery">Условия доставки</a></div>
     </div>
@@ -178,7 +178,7 @@ router.get('/dish/:slug', (req, res) => {
       <div class="card-badges inline">${p.is_popular ? '<span class="tag tag-hot">Хит</span>' : ''}${p.is_new ? '<span class="tag tag-new">Новинка</span>' : ''}</div>
       <h1>${esc(p.name)}</h1>
       ${p.description ? `<p class="lead-sm">${esc(p.description)}</p>` : ''}
-      ${p.weight_label ? `<p class="muted">${esc(p.weight_label)}</p>` : ''}
+      ${p.per100 ? `<p class="weight-note">Цена указана за 100 г. <strong>Минимальный заказ — ${p.min_grams} г.</strong></p>` : p.weight_label ? `<p class="muted">${esc(p.weight_label)}</p>` : ''}
       ${p.available ? `<div id="dish-form" class="dish-form"></div>` : '<p class="soldout big">Нет в наличии</p>'}
     </div>
   </div>
@@ -188,7 +188,7 @@ router.get('/dish/:slug', (req, res) => {
     ...(p.image ? { image: SITE_URL + p.image } : {}),
     offers: { '@type': 'Offer', priceCurrency: 'RUB', price: (p.price_from / 100).toFixed(2), availability: p.available ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' } };
   send(res, layout({ title: p.name, path: '/dish/' + p.slug, page: 'dish', body, jsonld, image: p.image || undefined,
-    description: `${p.name} — ${rub(p.price_from)}${p.per100 ? ' за 100 г' : ''}. ${p.description || ''} Доставка по Нижнему Новгороду.`.trim() }));
+    description: `${p.name} — ${p.per100 ? rub(p.price_per100) + ' за 100 г, заказ от ' + p.min_grams + ' г' : rub(p.price_from)}. ${p.description || ''} Доставка по Нижнему Новгороду.`.trim() }));
 });
 
 // ── Отзывы (снимок Яндекс.Карт) ───────────────────────────────
@@ -200,7 +200,7 @@ router.get('/reviews', (req, res) => {
 <section class="rv-hero">
   <div class="wrap rv-hero-in">
     <div class="rv-hero-l"><p class="eyebrow">Отзывы гостей</p><h1>Что говорят о нас гости</h1>
-      <p class="lead">Настоящие отзывы с Яндекс.Карт — показываем как есть, без правок.</p>
+      <p class="lead">Избранные отзывы наших гостей с Яндекс.Карт. Тексты — без правок.</p>
       <div class="btn-row">${leave}${all}</div></div>
     <div class="rv-score" aria-label="Рейтинг на Яндекс.Картах">
       <span class="rv-big">${score(rv.rating)}</span>${stars(Math.round(rv.rating), 'lg')}
@@ -210,7 +210,7 @@ router.get('/reviews', (req, res) => {
 </section>
 <section class="wrap sec" aria-label="Отзывы">
   <div class="rv-wall">${rv.reviews.map(reviewCard).join('')}</div>
-  <p class="muted small center rv-note">Отзывы опубликованы пользователями на Яндекс.Картах. Показаны отзывы с текстом по состоянию на ${fmtDate(rv.fetched_at)}. Авторы и тексты — как на источнике.</p>
+  <p class="muted small center rv-note">Показаны избранные отзывы (4–5 звёзд) с Яндекс.Карт, тексты авторов без изменений, по состоянию на ${fmtDate(rv.fetched_at)}. Все отзывы — на Яндекс.Картах.</p>
 </section>
 <section class="wrap sec">
   <div class="panel rv-cta">

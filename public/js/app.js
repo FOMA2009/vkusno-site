@@ -101,7 +101,7 @@
     const p = MENU[pid], f = document.createElement('form');
     f.className = 'opt-form'; let qty = 1;
     f.innerHTML = `
-      ${p.v.length ? `<fieldset class="opt-group"><legend>Выберите вариант</legend><div class="radios">${p.v.map((v, i) =>
+      ${p.v.length ? `<fieldset class="opt-group"><legend>${p.w ? `Выберите вес · цена за 100 г: ${rub(p.w.p)}` : 'Выберите вариант'}</legend>${p.w ? `<p class="hint hint-min">Минимальный заказ — ${p.w.m} г</p>` : ''}<div class="radios">${p.v.map((v, i) =>
         `<label class="radio"><input type="radio" name="variant" value="${v.id}" ${i === 0 ? 'checked' : ''}><span>${esc(v.n)}</span><span class="p">${rub(v.p)}</span></label>`).join('')}</div></fieldset>` : ''}
       ${p.o.length ? `<fieldset class="opt-group"><legend>Добавки <span class="opt">необязательно</span></legend><div class="radios">${p.o.map(o =>
         `<label class="check"><input type="checkbox" name="opt" value="${o.id}"><span>${esc(o.n)}</span><span class="p muted">${o.p ? '+' + rub(o.p) : 'бесплатно'}</span></label>`).join('')}</div></fieldset>` : ''}

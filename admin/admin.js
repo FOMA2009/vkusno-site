@@ -181,13 +181,13 @@
     const { products } = await api('/prices').catch(e => { toast(e.message, true); return { products: [] }; });
     view().innerHTML = `<div class="note">Здесь меняются только цены. Изменения сразу видны на сайте, все правки записываются в журнал. Цены указаны в рублях.</div>
       <div class="bar"><input class="grow" id="prq" type="search" placeholder="Найти блюдо" aria-label="Найти блюдо"></div><div id="prl"></div><div id="prlog"></div>`;
-    const priceInput = (key, label, kop) => { const g = /^(\d+) г$/.exec(label); return `<label class="pr-row"><span>${esc(label)}</span><input data-k="${key}" data-o="${kop}" ${g ? `data-g="${g[1]}"` : ''} inputmode="decimal" value="${fromKop(kop)}" aria-label="${esc(label)}, цена в рублях"></label>`; };
+    const priceInput = (key, label, kop) => { return `<label class="pr-row"><span>${esc(label)}</span><input data-k="${key}" data-o="${kop}" inputmode="decimal" value="${fromKop(kop)}" aria-label="${esc(label)}, цена в рублях"></label>`; };
     let cat = '';
     $('#prl').innerHTML = products.map(p => {
       const head = p.category_name !== cat ? `<h2 class="pr-cat">${esc(cat = p.category_name)}</h2>` : '';
-      return `${head}<section class="pr-item${p.is_active ? '' : ' off'}" data-id="${p.id}" data-name="${esc(p.name.toLowerCase())}">
+      return `${head}<section class="pr-item${p.is_active ? '' : ' off'}" data-id="${p.id}" data-g='${p.weight ? JSON.stringify(p.variants.map(v => parseInt(v.name, 10))) : '[]'}' data-name="${esc(p.name.toLowerCase())}">
         <div class="pr-h"><strong>${esc(p.name)}</strong>${p.is_active ? '' : '<span class="muted small">скрыто на сайте</span>'}</div>
-        ${p.variants.length ? p.variants.map(v => priceInput('v:' + v.id, v.name, v.price_kop)).join('') : priceInput('base', 'Цена', p.price_kop)}
+        ${p.weight ? `${priceInput('per100', 'Цена за 100 г', p.per100_kop)}<p class="muted small pr-portions" data-portions>${p.variants.map(v => `${esc(v.name)} — ${rub(v.price_kop)}`).join(' · ')}</p><p class="muted small">Заказ от ${Math.min(...p.variants.map(v => parseInt(v.name, 10)))} г — порции пересчитаются сами.</p>` : p.variants.length ? p.variants.map(v => priceInput('v:' + v.id, v.name, v.price_kop)).join('') : priceInput('base', 'Цена', p.price_kop)}
         ${p.options.map(o => priceInput('o:' + o.id, 'Добавка: ' + o.name, o.price_kop)).join('')}
         <div class="pr-act"><span class="muted small" data-msg></span><button class="btn btn-primary btn-xs" type="button" data-save disabled>Сохранить</button></div></section>`;
     }).join('') || '<p class="muted">Блюд нет.</p>';
@@ -195,8 +195,10 @@
     const changed = it => $$('input[data-k]', it).some(i => toKop(i.value) !== Number(i.dataset.o));
     $('#prl').addEventListener('input', e => {
       const it = e.target.closest('.pr-item');
-      // цена за 100 г пересчитывает порции 200/300/500 г автоматически
-      if (it && e.target.dataset.g === '100') { const k = toKop(e.target.value); $$('input[data-g]', it).forEach(i => { if (i !== e.target) i.value = fromKop(Math.round(k * Number(i.dataset.g) / 100)); }); }
+      if (it && e.target.dataset.k === 'per100') { // показать пересчитанные порции
+        const k = toKop(e.target.value), g = JSON.parse(it.dataset.g);
+        $('[data-portions]', it).textContent = g.map(x => `${x} г — ${rub(Math.round(k * x / 100))}`).join(' · ');
+      }
       if (it) { $('[data-save]', it).disabled = !changed(it); $('[data-msg]', it).textContent = ''; }
     });
     $('#prl').addEventListener('click', guard(async e => {
@@ -204,7 +206,7 @@
       const it = btn.closest('.pr-item'), body = { variants: [], options: [] };
       for (const i of $$('input[data-k]', it)) {
         const k = i.dataset.k, v = toKop(i.value);
-        if (k === 'base') body.price_kop = v; else if (k[0] === 'v') body.variants.push({ id: k.slice(2), price_kop: v }); else body.options.push({ id: k.slice(2), price_kop: v });
+        if (k === 'base') body.price_kop = v; else if (k === 'per100') body.per100_kop = v; else if (k[0] === 'v') body.variants.push({ id: k.slice(2), price_kop: v }); else body.options.push({ id: k.slice(2), price_kop: v });
       }
       btn.disabled = true;
       try { await api('/prices/' + it.dataset.id, { method: 'PUT', body }); $$('input[data-k]', it).forEach(i => { i.dataset.o = toKop(i.value); i.value = fromKop(toKop(i.value)); }); $('[data-msg]', it).textContent = 'Сохранено'; toast('Цена сохранена'); }

@@ -18,7 +18,13 @@ function getCatalog({ all = false } = {}) {
       const prices = p.variants.filter(v => v.in_stock || all).map(v => v.price_kop);
       p.price_from = prices.length ? Math.min(...prices) : p.price_kop;
       p.has_range = new Set(p.variants.map(v => v.price_kop)).size > 1;
-      p.per100 = p.variants[0].name === '100 г';
+      // блюдо с ценой за 100 г: варианты — вес в граммах («400 г», «500 г» …)
+      p.per100 = p.variants.every(v => /^\d+ г$/.test(v.name));
+      if (p.per100) {
+        const first = p.variants[0], g = parseInt(first.name, 10);
+        p.price_per100 = Math.round(first.price_kop * 100 / g);
+        p.min_grams = Math.min(...p.variants.map(v => parseInt(v.name, 10)));
+      }
     } else { p.price_from = p.price_kop; p.has_range = false; p.per100 = false; }
     c.products.push(p);
   }
@@ -33,6 +39,7 @@ function clientMap(products) {
       n: p.name, i: p.image, p: p.price_kop, a: p.available ? 1 : 0, s: p.slug,
       v: p.variants.filter(v => v.in_stock).map(v => ({ id: v.id, n: v.name, p: v.price_kop })),
       o: p.options.map(o => ({ id: o.id, n: o.name, p: o.price_kop })),
+      ...(p.per100 ? { w: { p: p.price_per100, m: p.min_grams } } : {}),
     };
   }
   return m;

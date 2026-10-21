@@ -321,3 +321,7 @@ mark.todo { background: #4a3410; color: #ffd391; padding: 1px 6px; border-radius
 @media (min-width: 700px) { .rv-wall { columns: 2; } .rv-wall-3 { columns: 3; } }
 @media (min-width: 900px) { .rv-hero-in { grid-template-columns: 1.5fr 1fr; align-items: center; padding-top: 48px; padding-bottom: 52px; } .rv-score { justify-self: end; width: 100%; } }
 @media (min-width: 1100px) { .rv-wall { columns: 3; } }
+
+.card-min { color: var(--acc); font-weight: 600; }
+.weight-note { margin: 0 0 14px; padding: 10px 14px; background: #2a2218; border: 1px solid var(--acc); border-radius: 12px; }
+.hint-min { margin: -2px 0 10px; color: var(--acc); font-weight: 600; }

@@ -50,7 +50,10 @@ router.get('/prices', priceEditor, (req, res) => {
   const prods = db.prepare('SELECT p.id, p.name, p.price_kop, p.is_active, c.name AS category_name FROM products p JOIN categories c ON c.id = p.category_id ORDER BY c.sort, p.sort, p.id').all();
   const vars = db.prepare('SELECT id, product_id, name, price_kop FROM product_variants ORDER BY sort, id').all();
   const opts = db.prepare('SELECT id, product_id, name, price_kop FROM product_options ORDER BY sort, id').all();
-  res.json({ products: prods.map(p => ({ ...p, variants: vars.filter(v => v.product_id === p.id), options: opts.filter(o => o.product_id === p.id) })) });
+  res.json({ products: prods.map(p => {
+    const variants = vars.filter(v => v.product_id === p.id), weight = variants.length > 0 && variants.every(v => /^\d+ г$/.test(v.name));
+    return { ...p, variants, options: opts.filter(o => o.product_id === p.id), weight, per100_kop: weight ? Math.round(variants[0].price_kop * 100 / parseInt(variants[0].name, 10)) : null };
+  }) });
 });
 router.put('/prices/:id', priceEditor, (req, res) => {
   const id = int(req.params.id), b = req.body || {};
@@ -60,7 +63,15 @@ router.put('/prices/:id', priceEditor, (req, res) => {
   const vars = db.prepare('SELECT * FROM product_variants WHERE product_id = ?').all(id);
   const opts = db.prepare('SELECT * FROM product_options WHERE product_id = ?').all(id);
   const changes = [];
-  if (b.price_kop !== undefined) { const n = kop(b.price_kop); if (n === null) return bad(res, 'Некорректная цена'); if (n !== p.price_kop) changes.push({ t: 'products', id, what: 'цена', old: p.price_kop, nw: n }); }
+  const isWeight = vars.length > 0 && vars.every(v => /^\d+ г$/.test(v.name));
+  if (isWeight && b.per100_kop !== undefined) { // цена за 100 г → все порции пересчитываются
+    const n = kop(b.per100_kop); if (n === null) return bad(res, 'Некорректная цена');
+    const old = Math.round(vars[0].price_kop * 100 / parseInt(vars[0].name, 10));
+    if (n !== old) {
+      for (const v of vars) changes.push({ t: 'product_variants', id: v.id, quiet: true, what: v.name, old: v.price_kop, nw: Math.round(n * parseInt(v.name, 10) / 100) });
+      changes.push({ t: 'products', id, what: 'цена за 100 г', old, nw: n });
+    }
+  } else if (b.price_kop !== undefined) { const n = kop(b.price_kop); if (n === null) return bad(res, 'Некорректная цена'); if (n !== p.price_kop) changes.push({ t: 'products', id, what: 'цена', old: p.price_kop, nw: n }); }
   for (const [list, rows, table, label] of [[b.variants, vars, 'product_variants', 'вариант'], [b.options, opts, 'product_options', 'добавка']]) {
     for (const x of Array.isArray(list) ? list : []) {
       const row = rows.find(r => r.id === int(x.id)); if (!row) return bad(res, 'Вариант не найден');
@@ -79,7 +90,7 @@ router.put('/prices/:id', priceEditor, (req, res) => {
   tx(() => {
     for (const c of changes) {
       db.prepare(`UPDATE ${c.t} SET price_kop = ? WHERE id = ?`).run(c.nw, c.id);
-      db.prepare('INSERT INTO price_log(product_id,product_name,what,old_kop,new_kop,user_id) VALUES(?,?,?,?,?,?)').run(id, p.name, c.what, c.old, c.nw, req.user.id);
+      if (!c.quiet) db.prepare('INSERT INTO price_log(product_id,product_name,what,old_kop,new_kop,user_id) VALUES(?,?,?,?,?,?)').run(id, p.name, c.what, c.old, c.nw, req.user.id);
     }
     if (changes.length) db.prepare("UPDATE products SET updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?").run(id);
   });

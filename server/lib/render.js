@@ -135,9 +135,9 @@ ${bare ? '' : `<footer class="ftr">
 
 // ── Карточка блюда ───────────────────────────────────────────
 function priceHtml(p) {
+  if (p.per100) return `<span class="price">${rub(p.price_per100)} <small>/ 100 г</small></span>`; // цена за 100 г
   const from = p.has_range ? '<small>от </small>' : '';
-  const note = p.per100 ? ' <small>/ 100 г</small>' : '';
-  return `<span class="price">${from}${rub(p.price_from)}${note}</span>`;
+  return `<span class="price">${from}${rub(p.price_from)}</span>`;
 }
 function dishImage(p, cls = 'card-img', size = '') {
   if (p.image) return `<div class="${cls}"><img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" decoding="async" ${size}></div>`;
@@ -152,7 +152,7 @@ function card(p) {
   <div class="card-body">
     <h3 class="card-title"><a href="/dish/${esc(p.slug)}">${esc(p.name)}</a></h3>
     ${p.description ? `<p class="card-desc">${esc(p.description)}</p>` : ''}
-    ${p.weight_label ? `<p class="card-w">${esc(p.weight_label)}</p>` : ''}
+    ${p.per100 ? `<p class="card-w card-min">Заказ от ${p.min_grams} г</p>` : p.weight_label ? `<p class="card-w">${esc(p.weight_label)}</p>` : ''}
     <div class="card-foot">
       ${priceHtml(p)}
       <div class="card-act" data-act="${p.id}">${p.available

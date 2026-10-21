@@ -110,12 +110,19 @@ function fromNominatim(x) {
     full: x.display_name,
     lat: Number(x.lat), lon: Number(x.lon),
     city, house, road,
-    precise: !!house && !!road && (HOUSE_CLASSES.has(x.category || x.class) || x.addresstype === 'house' || x.type === 'house'),
+    precise: !!house && !!road, // есть и улица, и номер дома — это точный адрес (здание или заведение по этому адресу)
   };
 }
 async function nominatim(q, city, bounded) {
   const p = new URLSearchParams({ format: 'jsonv2', addressdetails: '1', limit: '5', 'accept-language': 'ru', countrycodes: 'ru', q });
   if (bounded) { p.set('viewbox', `${NN_BBOX.w},${NN_BBOX.n},${NN_BBOX.e},${NN_BBOX.s}`); p.set('bounded', '1'); }
+  const arr = await throttled(() => fetchJson('https://nominatim.openstreetmap.org/search?' + p));
+  return arr.map(fromNominatim);
+}
+// Структурированный запрос «номер дома + улица» — точнее, когда обычный поиск вернул только улицу или город
+async function nominatimStructured(street, house, city) {
+  const p = new URLSearchParams({ format: 'jsonv2', addressdetails: '1', limit: '5', 'accept-language': 'ru', countrycodes: 'ru', street: `${house} ${street}`, city });
+  p.set('viewbox', `${NN_BBOX.w},${NN_BBOX.n},${NN_BBOX.e},${NN_BBOX.s}`); p.set('bounded', '1');
   const arr = await throttled(() => fetchJson('https://nominatim.openstreetmap.org/search?' + p));
   return arr.map(fromNominatim);
 }
@@ -160,15 +167,19 @@ async function search(input) {
       else {
         list = await nominatim(q, city, true);
         if (!list.length) list = await nominatim(text, city, false); // вдруг адрес вне города
+        if (!list.some(c => c.precise)) { // дом не найден — пробуем структурированный запрос
+          const m = /^(.*?)[,\s]+(\d+\s?[а-яa-z]?(?:\/\d+)?)$/i.exec(text.replace(new RegExp(city, 'i'), '').replace(/^[,\s]+|[,\s]+$/g, ''));
+          if (m) { try { list = [...(await nominatimStructured(m[1].replace(/,\s*$/, ''), m[2].replace(/\s/g, ''), city)), ...list]; } catch { /* оставляем первый результат */ } }
+        }
       }
     } catch (e) {
       const err = new Error('geocoder_unavailable'); err.cause = e; throw err;
     }
-    cacheSet(key, list);
+    if (list.some(c => c.precise)) cacheSet(key, list); // неточные/пустые ответы не кешируем — геокодер мог дать сбой
   }
   const seen = new Set();
-  const uniq = list.filter(c => { const k = c.label.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; })
-    .sort((a, b) => Number(b.precise) - Number(a.precise));
+  const uniq = [...list].sort((a, b) => Number(b.precise) - Number(a.precise)) // точные — вперёд, затем убираем дубли
+    .filter(c => { const k = c.label.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; });
   const candidates = uniq.map(c => {
     const inCity = c.city.toLowerCase() === city.toLowerCase();
     const inBox = c.lon >= NN_BBOX.w && c.lon <= NN_BBOX.e && c.lat >= NN_BBOX.s && c.lat <= NN_BBOX.n;

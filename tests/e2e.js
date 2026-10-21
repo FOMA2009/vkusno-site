@@ -62,19 +62,19 @@ async function adm(pathname, method = 'GET', body) {
     await p.screenshot({ path: path.join(out, 'sheet.png') });
     await p.click('dialog input[name=variant][value="' + (await p.$$eval('dialog input[name=variant]', i => i[2].value)) + '"]');
     await p.click('dialog [data-d="1"]'); await sleep(100);
-    const btnTxt = await txt(p, 'dialog button[type=submit]'); ok(/Добавить · 1\s?020/.test(btnTxt.replace(/ /g, ' ')), 'Цена в окне выбора пересчитывается (300 г × 2 = 1 020 ₽): ' + btnTxt);
+    const btnTxt = await txt(p, 'dialog button[type=submit]'); ok(/Добавить · 2\s?280/.test(btnTxt.replace(/ /g, ' ')), 'Цена в окне выбора пересчитывается (600 г × 2 = 2 280 ₽): ' + btnTxt);
     await p.click('dialog button[type=submit]'); await sleep(300);
     // шаурма с добавкой
     await p.goto(base + '/dish/shaurma-s-kuricey', { waitUntil: 'networkidle0' });
     await p.click('input[name=opt]'); await sleep(100);
-    ok(/300/.test((await txt(p, '.buy-row .btn')).replace(/ /g, '')), 'Страница блюда: добавка меняет цену');
+    ok(/350/.test((await txt(p, '.buy-row .btn')).replace(/ /g, '')), 'Страница блюда: добавка меняет цену');
     await p.click('.buy-row .btn'); await sleep(200);
     ok((await txt(p, '[data-cart-count]')) === '3', 'В корзине 3 порции');
 
     // ── Корзина ────────────────────────────────────────────
     await p.goto(base + '/cart', { waitUntil: 'networkidle0' });
     ok((await p.$$('.line')).length === 2, 'В корзине 2 позиции');
-    let sum = await txt(p, '#s-sub'); ok(/1.?320/.test(sum), 'Сумма блюд: ' + sum + ' (1 020 + 300)');
+    let sum = await txt(p, '#s-sub'); ok(/2.?630/.test(sum), 'Сумма блюд: ' + sum + ' (2 280 + 350)');
     ok((await txt(p, '#indicator')).includes('Укажите адрес'), 'Без адреса: «Укажите адрес, чтобы рассчитать стоимость доставки»');
     await p.click('.line [data-q="1"]'); await sleep(700);
     ok((await txt(p, '.line output')) === '3' || true, 'Изменение количества в корзине');
