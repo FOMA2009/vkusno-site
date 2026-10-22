@@ -33,7 +33,8 @@ app.use((req, res, next) => {
 app.get('/healthz', (req, res) => { db.prepare('SELECT 1').get(); res.type('text').send('ok'); });
 
 app.use('/uploads', express.static(cfg.UPLOAD_DIR, { maxAge: '30d', immutable: true, index: false }));
-app.use(express.static(cfg.PUBLIC_DIR, { maxAge: '7d', index: false, setHeaders: (res, p) => { if (/\.(html?)$/.test(p)) res.setHeader('Cache-Control', 'no-cache'); } }));
+app.use(express.static(cfg.PUBLIC_DIR, { maxAge: '7d', index: false, redirect: false, // redirect:false — папка public/menu с фото не должна перехватывать страницу /menu
+   setHeaders: (res, p) => { if (/\.(html?)$/.test(p)) res.setHeader('Cache-Control', 'no-cache'); } }));
 
 app.use(express.json({ limit: '300kb' }));
 
