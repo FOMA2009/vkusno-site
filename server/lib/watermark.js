@@ -1,7 +1,7 @@
 // Водяной знак на фото блюд. Все фото приводятся к одним пропорциям 4:3, а знак всегда стоит
 // в нижнем правом углу, одного относительного размера и с одним отступом — на всех снимках.
 // Чёрный фон логотипа становится прозрачным. У картинок с подписями цен снизу добавляется тёмная
-// полоса, чтобы знак не закрывал надписи.
+// знак меньше.
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
@@ -11,8 +11,11 @@ const WIDTH_RATIO = 0.14;  // ширина знака относительно �
 const MARGIN_RATIO = 0.015;
 const OPACITY = 0.85;
 const MAX_W = 900;
-// Фото-сетки с подписями цен на самом снимке (рис и лапша)
-const PAD_SLUGS = new Set(['ris', 'ramen-yaichnaya-lapsha', 'udon-pshenichnaya-lapsha', 'harusame-risovaya-lapsha']);
+// Фото из раздела «Лапша и рис» (в том числе сетки с подписями цен на самом снимке): остаются в исходном размере
+// и пропорциях, знак на них меньше, чтобы не закрывать подписи.
+const ORIGINAL_SIZE_SLUGS = new Set(['ris', 'ramen-yaichnaya-lapsha', 'soba-grechnevaya-lapsha', 'udon-pshenichnaya-lapsha', 'harusame-risovaya-lapsha']);
+const SMALL_WIDTH_RATIO = 0.066;
+const SMALL_MARGIN_RIGHT = 0.065; // правее краёвая часть обрезается карточкой 4:3, поэтому знак чуть отодвинут от края
 
 let base;
 async function logo() {
@@ -28,29 +31,20 @@ async function logo() {
   return base;
 }
 
-// input — путь или Buffer; out — путь результата (webp). pad — добавить полосу под знак вместо наложения на кадр.
-async function apply(input, out, { pad = false } = {}) {
+// input — путь или Buffer; out — путь результата (webp).
+// original — сохранить исходный размер и пропорции фото (знак меньше); иначе фото приводится к 4:3.
+async function apply(input, out, { original = false } = {}) {
   const L = await logo();
   const src = await sharp(input).rotate().toBuffer();
   const meta = await sharp(src).metadata();
-  const W = Math.min(meta.width, MAX_W), H = Math.round(W * 3 / 4);
-  const wmW = Math.max(84, Math.round(W * WIDTH_RATIO)), wmH = Math.round(wmW * L.h / L.w);
+  const W = original ? meta.width : Math.min(meta.width, MAX_W), H = original ? meta.height : Math.round(W * 3 / 4);
+  const wmW = original ? Math.round(W * SMALL_WIDTH_RATIO) : Math.max(84, Math.round(W * WIDTH_RATIO)), wmH = Math.round(wmW * L.h / L.w);
   const m = Math.max(4, Math.round(W * MARGIN_RATIO));
+  const mr = original ? Math.round(W * SMALL_MARGIN_RIGHT) : m;
   const wm = await sharp(L.buf, { raw: { width: L.w, height: L.h, channels: 4 } }).resize(wmW, wmH, { kernel: 'lanczos3' }).png().toBuffer();
-
-  let canvas;
-  if (!pad) {
-    canvas = await sharp(src).resize(W, H, { fit: 'cover', position: 'centre' }).toBuffer();
-  } else {
-    const contentH = H - (wmH + 2 * m);
-    const content = await sharp(src).resize({ width: W, height: contentH, fit: 'inside' }).toBuffer();
-    const cm = await sharp(content).metadata();
-    const [r, g, b] = await sharp(content).resize(1, 1).removeAlpha().raw().toBuffer();
-    canvas = await sharp({ create: { width: W, height: H, channels: 3, background: { r: Math.round(r * 0.55), g: Math.round(g * 0.55), b: Math.round(b * 0.55) } } })
-      .composite([{ input: content, left: Math.round((W - cm.width) / 2), top: 0 }]).png().toBuffer();
-  }
+  const canvas = original ? src : await sharp(src).resize(W, H, { fit: 'cover', position: 'centre' }).toBuffer();
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  await sharp(canvas).composite([{ input: wm, left: W - wmW - m, top: H - wmH - m }]).webp({ quality: 86 }).toFile(out);
+  await sharp(canvas).composite([{ input: wm, left: W - wmW - mr, top: H - wmH - m }]).webp({ quality: 86 }).toFile(out);
 }
 
-module.exports = { apply, PAD_SLUGS };
+module.exports = { apply, ORIGINAL_SIZE_SLUGS };

@@ -42,7 +42,7 @@ for (const i of src) if (i.photo && !byTitle.has(norm(i.title))) byTitle.set(nor
       const r = await fetch(hit.photo.replace('{size}', 'orig'), { headers: { 'User-Agent': 'Mozilla/5.0' } });
       if (!r.ok) throw new Error('HTTP ' + r.status);
       await sharp(Buffer.from(await r.arrayBuffer())).rotate().resize({ width: 900, height: 900, fit: 'inside', withoutEnlargement: true }).webp({ quality: 85 }).toFile(orig);
-      await watermark.apply(orig, file, { pad: watermark.PAD_SLUGS.has(p.slug) });
+      await watermark.apply(orig, file, { original: watermark.ORIGINAL_SIZE_SLUGS.has(p.slug) });
       db.prepare("UPDATE products SET image = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?").run('/menu/' + p.slug + '.webp', p.id);
       ok++;
     } catch (e) { miss.push(p.name + ' (ошибка загрузки: ' + e.message + ')'); }
