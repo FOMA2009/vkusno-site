@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const sharp = require('sharp');
 const { db } = require('../server/db');
+const watermark = require('../server/lib/watermark');
 const src = require('./data/yandex-menu.json');
 
 const norm = s => String(s).toLowerCase().replace(/ё/g, 'е').replace(/[«»"'()]/g, '').replace(/\s+/g, ' ').trim();
@@ -36,10 +37,12 @@ for (const i of src) if (i.photo && !byTitle.has(norm(i.title))) byTitle.set(nor
     const hit = byTitle.get(norm(ALIAS[p.name] || p.name));
     if (!hit) { if (!p.image) miss.push(p.name); continue; }
     const file = path.join(__dirname, '..', 'public', 'menu', p.slug + '.webp');
+    const orig = path.join(__dirname, '..', 'assets', 'menu-originals', p.slug + '.webp'); // оригинал без знака
     try {
       const r = await fetch(hit.photo.replace('{size}', 'orig'), { headers: { 'User-Agent': 'Mozilla/5.0' } });
       if (!r.ok) throw new Error('HTTP ' + r.status);
-      await sharp(Buffer.from(await r.arrayBuffer())).rotate().resize({ width: 900, height: 900, fit: 'inside', withoutEnlargement: true }).webp({ quality: 82 }).toFile(file);
+      await sharp(Buffer.from(await r.arrayBuffer())).rotate().resize({ width: 900, height: 900, fit: 'inside', withoutEnlargement: true }).webp({ quality: 85 }).toFile(orig);
+      await watermark.apply(orig, file, { pad: watermark.PAD_SLUGS.has(p.slug) });
       db.prepare("UPDATE products SET image = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?").run('/menu/' + p.slug + '.webp', p.id);
       ok++;
     } catch (e) { miss.push(p.name + ' (ошибка загрузки: ' + e.message + ')'); }

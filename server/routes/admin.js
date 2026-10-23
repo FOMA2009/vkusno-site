@@ -8,6 +8,7 @@ const { db, tx, settings } = require('../db');
 const auth = require('../lib/auth');
 const orders = require('../lib/orders');
 const mail = require('../lib/mail');
+const watermark = require('../lib/watermark');
 const payments = require('../lib/payments');
 const { slugify, STATUS_FLOW, STATUS_LABELS } = require('../lib/util');
 const { UPLOAD_DIR, SMTP, YANDEX_GEOCODER_KEY } = require('../config');
@@ -248,7 +249,8 @@ router.post('/upload', adminOnly, upload.single('file'), wrap(async (req, res) =
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
   const name = crypto.randomBytes(10).toString('hex') + '.webp';
   try {
-    await sharp(req.file.buffer).rotate().resize({ width: 1000, height: 1000, fit: 'inside', withoutEnlargement: true }).webp({ quality: 80 }).toFile(path.join(UPLOAD_DIR, name));
+    if (req.query.wm === '1') await watermark.apply(req.file.buffer, path.join(UPLOAD_DIR, name)); // фото блюда: единые пропорции 4:3 + водяной знак
+    else await sharp(req.file.buffer).rotate().resize({ width: 1000, height: 1000, fit: 'inside', withoutEnlargement: true }).webp({ quality: 80 }).toFile(path.join(UPLOAD_DIR, name));
   } catch { return bad(res, 'Не удалось обработать изображение — файл повреждён или не является картинкой'); }
   res.json({ ok: true, url: '/uploads/' + name });
 }));

@@ -3,6 +3,7 @@
 const path = require('path');
 const sharp = require('sharp');
 const { db } = require('../server/db');
+const watermark = require('../server/lib/watermark');
 
 const dir = process.argv[2];
 if (!dir) { console.error('Укажите папку с фото'); process.exit(1); }
@@ -31,8 +32,9 @@ const MAP = {
     for (const name of [].concat(names)) {
       const p = db.prepare('SELECT id, slug FROM products WHERE name = ?').get(name);
       if (!p) { console.error('НЕ НАЙДЕНО блюдо:', name); process.exitCode = 1; continue; }
-      await sharp(path.join(dir, num + '.jpg')).rotate().resize({ width: 900, withoutEnlargement: true }).webp({ quality: 85 })
-        .toFile(path.join(__dirname, '..', 'public', 'menu', p.slug + '.webp'));
+      const orig = path.join(__dirname, '..', 'assets', 'menu-originals', p.slug + '.webp'); // оригинал без знака
+      await sharp(path.join(dir, num + '.jpg')).rotate().resize({ width: 900, withoutEnlargement: true }).webp({ quality: 85 }).toFile(orig);
+      await watermark.apply(orig, path.join(__dirname, '..', 'public', 'menu', p.slug + '.webp'), { pad: watermark.PAD_SLUGS.has(p.slug) });
       db.prepare("UPDATE products SET image = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?").run('/menu/' + p.slug + '.webp', p.id);
       n++;
     }

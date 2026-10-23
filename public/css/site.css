@@ -140,10 +140,10 @@ body[data-page="cart"], body[data-page="checkout"] { padding-bottom: calc(96px +
 .sel select { min-height: 44px; background: var(--s2); color: var(--txt); border: 1px solid var(--line); border-radius: 999px; padding: 0 14px; font: inherit; }
 .cat { padding-top: 22px; } .cat h2 { margin-bottom: .3em; } .cat-d { margin-top: -.2em; }
 .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-.card { position: relative; display: grid; grid-template-columns: 104px 1fr; gap: 12px; background: var(--s1); border: 1px solid var(--line); border-radius: var(--r); padding: 10px; min-width: 0; contain: layout paint; }
+.card { position: relative; display: grid; grid-template-columns: 128px 1fr; gap: 12px; background: var(--s1); border: 1px solid var(--line); border-radius: var(--r); padding: 10px; min-width: 0; contain: layout paint; }
 .card.is-off { opacity: .7; }
 .card-link { display: block; }
-.card-img { border-radius: var(--r-sm); overflow: hidden; background: var(--s2); aspect-ratio: 1; }
+.card-img { border-radius: var(--r-sm); overflow: hidden; background: var(--s2); aspect-ratio: 4 / 3; }
 .card-img img { width: 100%; height: 100%; object-fit: cover; }
 .card-img.ph { display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 40%, #2a2218, var(--s2) 70%); }
 .card-img.ph img { width: 60%; height: auto; object-fit: contain; opacity: .9; mix-blend-mode: lighten; }
@@ -189,7 +189,7 @@ dialog.sheet::backdrop { background: rgba(0, 0, 0, .72); }
 .lines { display: grid; gap: 10px; }
 .line { display: grid; grid-template-columns: 72px 1fr; gap: 12px; background: var(--s1); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; }
 .line.bad { border-color: var(--err); }
-.line .card-img { aspect-ratio: 1; }
+.line .card-img { aspect-ratio: 4 / 3; }
 .line-name { font-weight: 700; margin: 0 0 2px; } .line-sub { color: var(--mut); font-size: .85rem; margin: 0 0 2px; }
 .line-issue { color: var(--err); font-size: .875rem; font-weight: 600; margin: 4px 0 0; }
 .line-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top: 8px; grid-column: 1 / -1; }

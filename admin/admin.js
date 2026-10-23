@@ -170,7 +170,7 @@
       } });
     d.addEventListener('click', e => { if (e.target.closest('[data-rm]')) e.target.closest('.sub-row').remove(); });
     $('#addv', d).onclick = () => $('#vars', d).insertAdjacentHTML('beforeend', vRow({ name: '' })); $('#addo', d).onclick = () => $('#opts', d).insertAdjacentHTML('beforeend', oRow({ name: '' }));
-    $('#pfile', d).onchange = guard(async e => { const file = e.target.files[0]; if (!file) return; const fd = new FormData(); fd.append('file', file); const r = await api('/upload', { method: 'POST', form: fd }); image = r.url; $('#pimg', d).src = image; $('#pimg', d).hidden = false; $('#pimg-rm', d).hidden = false; toast('Фото загружено — нажмите «Сохранить»'); });
+    $('#pfile', d).onchange = guard(async e => { const file = e.target.files[0]; if (!file) return; const fd = new FormData(); fd.append('file', file); const r = await api('/upload?wm=1', { method: 'POST', form: fd }); image = r.url; $('#pimg', d).src = image; $('#pimg', d).hidden = false; $('#pimg-rm', d).hidden = false; toast('Фото загружено — нажмите «Сохранить»'); });
     $('#pimg-rm', d).onclick = () => { image = ''; $('#pimg', d).hidden = true; $('#pimg-rm', d).hidden = true; };
     const del = $('[data-del]', d); if (del) del.onclick = guard(async () => { if (!confirm('Удалить блюдо? Оформленные заказы сохранятся.')) return; await api('/products/' + id, { method: 'DELETE' }); d.close(); toast('Удалено'); done(); });
   });
